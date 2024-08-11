@@ -296,7 +296,7 @@ def get_args_parser():
     parser.add_argument('--dist_url', default='env://', help='url used to set up distributed training')
     parser.add_argument('--rank', default=0, type=int,
                         help='number of distributed processes')
-    parser.add_argument('--local_rank', type=int, help='local rank for dist')
+    parser.add_argument('--local-rank', type=int, help='local rank for dist')
     parser.add_argument('--find_unused_params', action='store_true')
 
     parser.add_argument('--eval', action='store_true')
@@ -662,28 +662,28 @@ if __name__ == "__main__":
 
     # valid set
     dataset_coift_val = {"name": "COIFT",
-                 "im_dir": "./data/thin_object_detection/COIFT/images",
-                 "gt_dir": "./data/thin_object_detection/COIFT/masks",
-                 "im_ext": ".jpg",
-                 "gt_ext": ".png"}
+                         "im_dir": "/home/junyoon/sam-aug/data/thin_object_detection/COIFT/images",
+                         "gt_dir": "/home/junyoon/sam-aug/data/thin_object_detection/COIFT/masks",
+                         "im_ext": ".jpg",
+                         "gt_ext": ".png"}
 
     dataset_hrsod_val = {"name": "HRSOD",
-                 "im_dir": "./data/thin_object_detection/HRSOD/images",
-                 "gt_dir": "./data/thin_object_detection/HRSOD/masks_max255",
-                 "im_ext": ".jpg",
-                 "gt_ext": ".png"}
+                         "im_dir": "/home/junyoon/sam-aug/data/thin_object_detection/HRSOD/images",
+                         "gt_dir": "/home/junyoon/sam-aug/data/thin_object_detection/HRSOD/masks_max255",
+                         "im_ext": ".jpg",
+                         "gt_ext": ".png"}
 
     dataset_thin_val = {"name": "ThinObject5k-TE",
-                 "im_dir": "./data/thin_object_detection/ThinObject5K/images_test",
-                 "gt_dir": "./data/thin_object_detection/ThinObject5K/masks_test",
-                 "im_ext": ".jpg",
-                 "gt_ext": ".png"}
+                        "im_dir": "/home/junyoon/sam-aug/data/thin_object_detection/ThinObject5K/images_test",
+                        "gt_dir": "/home/junyoon/sam-aug/data/thin_object_detection/ThinObject5K/masks_test",
+                        "im_ext": ".jpg",
+                        "gt_ext": ".png"}
 
     dataset_dis_val = {"name": "DIS5K-VD",
-                 "im_dir": "./data/DIS5K/DIS-VD/im",
-                 "gt_dir": "./data/DIS5K/DIS-VD/gt",
-                 "im_ext": ".jpg",
-                 "gt_ext": ".png"}
+                       "im_dir": "/home/junyoon/sam-aug/data/DIS5K/DIS5K/DIS-VD/im",
+                       "gt_dir": "/home/junyoon/sam-aug/data/DIS5K/DIS5K/DIS-VD/gt",
+                       "im_ext": ".jpg",
+                       "gt_ext": ".png"}
 
     train_datasets = [dataset_dis, dataset_thin, dataset_fss, dataset_duts, dataset_duts_te, dataset_ecssd, dataset_msra]
     valid_datasets = [dataset_dis_val, dataset_coift_val, dataset_hrsod_val, dataset_thin_val] 
