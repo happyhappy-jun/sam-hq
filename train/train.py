@@ -618,6 +618,18 @@ if __name__ == "__main__":
 
     ### --------------- Configuring the Train and Valid datasets ---------------
 
+    # dataset_dis = {"name": "DIS5K-TR",
+    #              "im_dir": "./data/DIS5K/DIS-TR/im",
+    #              "gt_dir": "./data/DIS5K/DIS-TR/gt",
+    #              "im_ext": ".jpg",
+    #              "gt_ext": ".png"}
+    #
+    # dataset_thin = {"name": "ThinObject5k-TR",
+    #              "im_dir": "./data/thin_object_detection/ThinObject5K/images_train",
+    #              "gt_dir": "./data/thin_object_detection/ThinObject5K/masks_train",
+    #              "im_ext": ".jpg",
+    #              "gt_ext": ".png"}
+
     dataset_dis = {"name": "DIS5K-TR",
                  "im_dir": "./data/DIS5K/DIS-TR/im",
                  "gt_dir": "./data/DIS5K/DIS-TR/gt",
@@ -626,7 +638,7 @@ if __name__ == "__main__":
 
     dataset_thin = {"name": "ThinObject5k-TR",
                  "im_dir": "./data/thin_object_detection/ThinObject5K/images_train",
-                 "gt_dir": "./data/thin_object_detection/ThinObject5K/masks_train",
+                 "gt_dir": "./home/junyoon/sam-aug/outputs/trans_x4/outpainted/thin_object_detection/ThinObject5K/masks_train",
                  "im_ext": ".jpg",
                  "gt_ext": ".png"}
 
