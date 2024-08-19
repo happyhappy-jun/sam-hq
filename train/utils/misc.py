@@ -535,3 +535,14 @@ def boundary_iou(gt, dt, dilation_ratio=0.02):
     union = ((gt_boundary + dt_boundary) > 0).sum()
     boundary_iou = intersection / union
     return torch.tensor(boundary_iou).float().to(device)
+
+if __name__ == "__main__":
+    data= list(range(100))
+    batched_data = [data[x:x+10] for x in range(0, len(data), 10)]
+    metric_logger = MetricLogger(delimiter="  ")
+    for x in metric_logger.log_every(batched_data, 1):
+        print(x)
+        for i in x:
+            metric_logger.update(x=i)
+        print(metric_logger)
+    print(sum([90, 91, 92, 93, 94, 95, 96, 97, 98, 99])/10)
