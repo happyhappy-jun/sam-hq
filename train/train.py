@@ -640,14 +640,14 @@ if __name__ == "__main__":
     #              "gt_ext": ".png"}
 
     dataset_dis = {"name": "DIS5K-TR",
-                   "im_dir": "/home/junyoon/sam-aug/sampled_x0.5_data/DIS5K/DIS5K/im",
-                   "gt_dir": "/home/junyoon/sam-aug/sampled_x0.5_data/DIS5K/DIS5K/gt",
+                   "im_dir": "/home/junyoon/sam-aug/outputs/trans_x4/bbox_outpaint/DIS5K/DIS5K/DIS-TR/im",
+                   "gt_dir": "/home/junyoon/sam-aug/outputs/trans_x4/bbox_outpaint/DIS5K/DIS5K/DIS-TR/gt",
                    "im_ext": ".jpg",
                    "gt_ext": ".png"}
 
     dataset_thin = {"name": "ThinObject5k-TR",
-                    "im_dir": "/home/junyoon/sam-aug/sampled_x0.5_data/thin_object_detection/ThinObject5K/images_train",
-                    "gt_dir": "/home/junyoon/sam-aug/sampled_x0.5_data/thin_object_detection/ThinObject5K/masks_train",
+                    "im_dir": "/home/junyoon/sam-aug/outputs/trans_x4/bbox_outpaint/thin_object_detection/ThinObject5K/images_train",
+                    "gt_dir": "/home/junyoon/sam-aug/outputs/trans_x4/bbox_outpaint/thin_object_detection/ThinObject5K/masks_train",
                     "im_ext": ".jpg",
                     "gt_ext": ".png"}
 
