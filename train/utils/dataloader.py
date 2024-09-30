@@ -18,53 +18,79 @@ from torchvision.transforms.functional import normalize
 import torch.nn.functional as F
 from torch.utils.data.distributed import DistributedSampler
 
+
 #### --------------------- dataloader online ---------------------####
 
-def get_im_gt_name_dict(datasets, flag='valid'):
+def check_augfile_exist(filename, targets):
+    for target_file in targets:
+        target_files_postfix = target_file + "_"
+        if target_files_postfix in filename or target_file == filename:
+            return True
+    return False
+
+
+def get_im_gt_name_dict(datasets, sample_file=None, flag='valid', sample_ratio=1.0):
     print("------------------------------", flag, "--------------------------------")
     name_im_gt_list = []
+    exclude_list = ['outpaint_2', 'outpaint_3', 'outpaint_4', 'outpaint_5', 'outpaint_6', 'outpaint_7', 'inpaint_1']
+    # sample_file = "/home/junyoon/sam-aug/src/utils/sampled_files.txt"
+    if sample_file is not None:
+        with open(sample_file, 'r') as f:
+            data = f.readlines()
+            data = [x.strip().split() for x in data]
+
+        im_basename_list = [os.path.basename(x[0]).split(".")[0] for x in data]
 
     for i in range(len(datasets)):
-        print("--->>>", flag, " dataset ",i,"/",len(datasets)," ",datasets[i]["name"],"<<<---")
+        print("--->>>", flag, " dataset ", i, "/", len(datasets), " ", datasets[i]["name"], "<<<---")
         tmp_im_list, tmp_gt_list = [], []
-        tmp_im_list = glob(datasets[i]["im_dir"]+os.sep+'*'+datasets[i]["im_ext"])
-        print('-im-',datasets[i]["name"],datasets[i]["im_dir"], ': ',len(tmp_im_list))
+        tmp_im_list = glob(datasets[i]["im_dir"] + os.sep + '*' + datasets[i]["im_ext"])
+        if datasets[i]["name"] in ["DIS5K-TR", "ThinObject5k-TR", "DIS5K-TR-AUG", "ThinObject5k-TR-AUG"]:
+            if sample_file is not None:
+                tmp_im_list = [im_path for im_path in tmp_im_list if
+                               check_augfile_exist(os.path.basename(im_path).split(".")[0], im_basename_list)]
+            tmp_im_list = [im_path for im_path in tmp_im_list if not any([x in im_path for x in exclude_list])]
+            tmp_im_list = random.sample(tmp_im_list, int(len(tmp_im_list) * sample_ratio))
+        else:
+            tmp_im_list = tmp_im_list
+        print('-im-', datasets[i]["name"], datasets[i]["im_dir"], ': ', len(tmp_im_list))
 
-        if(datasets[i]["gt_dir"]==""):
+        if (datasets[i]["gt_dir"] == ""):
             print('-gt-', datasets[i]["name"], datasets[i]["gt_dir"], ': ', 'No Ground Truth Found')
             tmp_gt_list = []
         else:
-            tmp_gt_list = [datasets[i]["gt_dir"]+os.sep+x.split(os.sep)[-1].split(datasets[i]["im_ext"])[0]+datasets[i]["gt_ext"] for x in tmp_im_list]
-            print('-gt-', datasets[i]["name"],datasets[i]["gt_dir"], ': ',len(tmp_gt_list))
+            tmp_gt_list = [
+                datasets[i]["gt_dir"] + os.sep + x.split(os.sep)[-1].split(datasets[i]["im_ext"])[0] + datasets[i][
+                    "gt_ext"] for x in tmp_im_list]
+            print('-gt-', datasets[i]["name"], datasets[i]["gt_dir"], ': ', len(tmp_gt_list))
 
-
-        name_im_gt_list.append({"dataset_name":datasets[i]["name"],
-                                "im_path":tmp_im_list,
-                                "gt_path":tmp_gt_list,
-                                "im_ext":datasets[i]["im_ext"],
-                                "gt_ext":datasets[i]["gt_ext"]})
+        name_im_gt_list.append({"dataset_name": datasets[i]["name"],
+                                "im_path": tmp_im_list,
+                                "gt_path": tmp_gt_list,
+                                "im_ext": datasets[i]["im_ext"],
+                                "gt_ext": datasets[i]["gt_ext"]})
 
     return name_im_gt_list
+
 
 def create_dataloaders(name_im_gt_list, my_transforms=[], batch_size=1, training=False):
     gos_dataloaders = []
     gos_datasets = []
 
-    if(len(name_im_gt_list)==0):
+    if (len(name_im_gt_list) == 0):
         return gos_dataloaders, gos_datasets
 
     num_workers_ = 1
-    if(batch_size>1):
+    if (batch_size > 1):
         num_workers_ = 2
-    if(batch_size>4):
+    if (batch_size > 4):
         num_workers_ = 4
-    if(batch_size>8):
+    if (batch_size > 8):
         num_workers_ = 8
 
-
     if training:
-        for i in range(len(name_im_gt_list)):   
-            gos_dataset = OnlineDataset([name_im_gt_list[i]], transform = transforms.Compose(my_transforms))
+        for i in range(len(name_im_gt_list)):
+            gos_dataset = OnlineDataset([name_im_gt_list[i]], transform=transforms.Compose(my_transforms))
             gos_datasets.append(gos_dataset)
 
         gos_dataset = ConcatDataset(gos_datasets)
@@ -77,8 +103,9 @@ def create_dataloaders(name_im_gt_list, my_transforms=[], batch_size=1, training
         gos_datasets = gos_dataset
 
     else:
-        for i in range(len(name_im_gt_list)):   
-            gos_dataset = OnlineDataset([name_im_gt_list[i]], transform = transforms.Compose(my_transforms), eval_ori_resolution = True)
+        for i in range(len(name_im_gt_list)):
+            gos_dataset = OnlineDataset([name_im_gt_list[i]], transform=transforms.Compose(my_transforms),
+                                        eval_ori_resolution=True)
             sampler = DistributedSampler(gos_dataset, shuffle=False)
             dataloader = DataLoader(gos_dataset, batch_size, sampler=sampler, drop_last=False, num_workers=num_workers_)
 
@@ -87,35 +114,41 @@ def create_dataloaders(name_im_gt_list, my_transforms=[], batch_size=1, training
 
     return gos_dataloaders, gos_datasets
 
+
 class RandomHFlip(object):
-    def __init__(self,prob=0.5):
+    def __init__(self, prob=0.5):
         self.prob = prob
-    def __call__(self,sample):
-        imidx, image, label, shape =  sample['imidx'], sample['image'], sample['label'], sample['shape']
+
+    def __call__(self, sample):
+        imidx, image, label, shape = sample['imidx'], sample['image'], sample['label'], sample['shape']
 
         # random horizontal flip
         if random.random() >= self.prob:
-            image = torch.flip(image,dims=[2])
-            label = torch.flip(label,dims=[2])
+            image = torch.flip(image, dims=[2])
+            label = torch.flip(label, dims=[2])
 
-        return {'imidx':imidx,'image':image, 'label':label, 'shape':shape}
+        return {'imidx': imidx, 'image': image, 'label': label, 'shape': shape}
+
 
 class Resize(object):
-    def __init__(self,size=[320,320]):
+    def __init__(self, size=[320, 320]):
         self.size = size
-    def __call__(self,sample):
-        imidx, image, label, shape =  sample['imidx'], sample['image'], sample['label'], sample['shape']
 
-        image = torch.squeeze(F.interpolate(torch.unsqueeze(image,0),self.size,mode='bilinear'),dim=0)
-        label = torch.squeeze(F.interpolate(torch.unsqueeze(label,0),self.size,mode='bilinear'),dim=0)
+    def __call__(self, sample):
+        imidx, image, label, shape = sample['imidx'], sample['image'], sample['label'], sample['shape']
 
-        return {'imidx':imidx,'image':image, 'label':label, 'shape':torch.tensor(self.size)}
+        image = torch.squeeze(F.interpolate(torch.unsqueeze(image, 0), self.size, mode='bilinear'), dim=0)
+        label = torch.squeeze(F.interpolate(torch.unsqueeze(label, 0), self.size, mode='bilinear'), dim=0)
+
+        return {'imidx': imidx, 'image': image, 'label': label, 'shape': torch.tensor(self.size)}
+
 
 class RandomCrop(object):
-    def __init__(self,size=[288,288]):
+    def __init__(self, size=[288, 288]):
         self.size = size
-    def __call__(self,sample):
-        imidx, image, label, shape =  sample['imidx'], sample['image'], sample['label'], sample['shape']
+
+    def __call__(self, sample):
+        imidx, image, label, shape = sample['imidx'], sample['image'], sample['label'], sample['shape']
 
         h, w = image.shape[1:]
         new_h, new_w = self.size
@@ -123,24 +156,22 @@ class RandomCrop(object):
         top = np.random.randint(0, h - new_h)
         left = np.random.randint(0, w - new_w)
 
-        image = image[:,top:top+new_h,left:left+new_w]
-        label = label[:,top:top+new_h,left:left+new_w]
+        image = image[:, top:top + new_h, left:left + new_w]
+        label = label[:, top:top + new_h, left:left + new_w]
 
-        return {'imidx':imidx,'image':image, 'label':label, 'shape':torch.tensor(self.size)}
+        return {'imidx': imidx, 'image': image, 'label': label, 'shape': torch.tensor(self.size)}
 
 
 class Normalize(object):
-    def __init__(self, mean=[0.485,0.456,0.406], std=[0.229,0.224,0.225]):
+    def __init__(self, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
         self.mean = mean
         self.std = std
 
-    def __call__(self,sample):
+    def __call__(self, sample):
+        imidx, image, label, shape = sample['imidx'], sample['image'], sample['label'], sample['shape']
+        image = normalize(image, self.mean, self.std)
 
-        imidx, image, label, shape =  sample['imidx'], sample['image'], sample['label'], sample['shape']
-        image = normalize(image,self.mean,self.std)
-
-        return {'imidx':imidx,'image':image, 'label':label, 'shape':shape}
-
+        return {'imidx': imidx, 'image': image, 'label': label, 'shape': shape}
 
 
 class LargeScaleJitter(object):
@@ -161,9 +192,9 @@ class LargeScaleJitter(object):
         return target
 
     def __call__(self, sample):
-        imidx, image, label, image_size =  sample['imidx'], sample['image'], sample['label'], sample['shape']
+        imidx, image, label, image_size = sample['imidx'], sample['image'], sample['label'], sample['shape']
 
-        #resize keep ratio
+        # resize keep ratio
         out_desired_size = (self.desired_size * image_size / max(image_size)).round().int()
 
         random_scale = torch.rand(1) * (self.aug_scale_max - self.aug_scale_min) + self.aug_scale_min
@@ -171,10 +202,12 @@ class LargeScaleJitter(object):
 
         scale = torch.minimum(scaled_size / image_size[0], scaled_size / image_size[1])
         scaled_size = (image_size * scale).round().long()
-        
-        scaled_image = torch.squeeze(F.interpolate(torch.unsqueeze(image,0),scaled_size.tolist(),mode='bilinear'),dim=0)
-        scaled_label = torch.squeeze(F.interpolate(torch.unsqueeze(label,0),scaled_size.tolist(),mode='bilinear'),dim=0)
-        
+
+        scaled_image = torch.squeeze(F.interpolate(torch.unsqueeze(image, 0), scaled_size.tolist(), mode='bilinear'),
+                                     dim=0)
+        scaled_label = torch.squeeze(F.interpolate(torch.unsqueeze(label, 0), scaled_size.tolist(), mode='bilinear'),
+                                     dim=0)
+
         # random crop
         crop_size = (min(self.desired_size, scaled_size[0]), min(self.desired_size, scaled_size[1]))
 
@@ -185,20 +218,16 @@ class LargeScaleJitter(object):
         crop_y1, crop_y2 = offset_h, offset_h + crop_size[0].item()
         crop_x1, crop_x2 = offset_w, offset_w + crop_size[1].item()
 
-        scaled_image = scaled_image[:,crop_y1:crop_y2, crop_x1:crop_x2]
-        scaled_label = scaled_label[:,crop_y1:crop_y2, crop_x1:crop_x2]
+        scaled_image = scaled_image[:, crop_y1:crop_y2, crop_x1:crop_x2]
+        scaled_label = scaled_label[:, crop_y1:crop_y2, crop_x1:crop_x2]
 
         # pad
         padding_h = max(self.desired_size - scaled_image.size(1), 0).item()
         padding_w = max(self.desired_size - scaled_image.size(2), 0).item()
-        image = F.pad(scaled_image, [0,padding_w, 0,padding_h],value=128)
-        label = F.pad(scaled_label, [0,padding_w, 0,padding_h],value=0)
+        image = F.pad(scaled_image, [0, padding_w, 0, padding_h], value=128)
+        label = F.pad(scaled_label, [0, padding_w, 0, padding_h], value=0)
 
-        return {'imidx':imidx,'image':image, 'label':label, 'shape':torch.tensor(image.shape[-2:])}
-
-
-
-
+        return {'imidx': imidx, 'image': image, 'label': label, 'shape': torch.tensor(image.shape[-2:])}
 
 
 class OnlineDataset(Dataset):
@@ -208,22 +237,22 @@ class OnlineDataset(Dataset):
         self.dataset = {}
         ## combine different datasets into one
         dataset_names = []
-        dt_name_list = [] # dataset name per image
-        im_name_list = [] # image name
-        im_path_list = [] # im path
-        gt_path_list = [] # gt path
-        im_ext_list = [] # im ext
-        gt_ext_list = [] # gt ext
-        for i in range(0,len(name_im_gt_list)):
+        dt_name_list = []  # dataset name per image
+        im_name_list = []  # image name
+        im_path_list = []  # im path
+        gt_path_list = []  # gt path
+        im_ext_list = []  # im ext
+        gt_ext_list = []  # gt ext
+        for i in range(0, len(name_im_gt_list)):
             dataset_names.append(name_im_gt_list[i]["dataset_name"])
             # dataset name repeated based on the number of images in this dataset
             dt_name_list.extend([name_im_gt_list[i]["dataset_name"] for x in name_im_gt_list[i]["im_path"]])
-            im_name_list.extend([x.split(os.sep)[-1].split(name_im_gt_list[i]["im_ext"])[0] for x in name_im_gt_list[i]["im_path"]])
+            im_name_list.extend(
+                [x.split(os.sep)[-1].split(name_im_gt_list[i]["im_ext"])[0] for x in name_im_gt_list[i]["im_path"]])
             im_path_list.extend(name_im_gt_list[i]["im_path"])
             gt_path_list.extend(name_im_gt_list[i]["gt_path"])
             im_ext_list.extend([name_im_gt_list[i]["im_ext"] for x in name_im_gt_list[i]["im_path"]])
             gt_ext_list.extend([name_im_gt_list[i]["gt_ext"] for x in name_im_gt_list[i]["gt_path"]])
-
 
         self.dataset["data_name"] = dt_name_list
         self.dataset["im_name"] = im_name_list
@@ -238,6 +267,7 @@ class OnlineDataset(Dataset):
 
     def __len__(self):
         return len(self.dataset["im_path"])
+
     def __getitem__(self, idx):
         im_path = self.dataset["im_path"][idx]
         gt_path = self.dataset["gt_path"][idx]
@@ -251,16 +281,16 @@ class OnlineDataset(Dataset):
         if im.shape[2] == 1:
             im = np.repeat(im, 3, axis=2)
         im = torch.tensor(im.copy(), dtype=torch.float32)
-        im = torch.transpose(torch.transpose(im,1,2),0,1)
-        gt = torch.unsqueeze(torch.tensor(gt, dtype=torch.float32),0)
+        im = torch.transpose(torch.transpose(im, 1, 2), 0, 1)
+        gt = torch.unsqueeze(torch.tensor(gt, dtype=torch.float32), 0)
 
         sample = {
-        "imidx": torch.from_numpy(np.array(idx)),
-        "image": im,
-        "label": gt,
-        "shape": torch.tensor(im.shape[-2:]),
+            "imidx": torch.from_numpy(np.array(idx)),
+            "image": im,
+            "label": gt,
+            "shape": torch.tensor(im.shape[-2:]),
         }
-        
+
         if self.transform:
             sample = self.transform(sample)
 

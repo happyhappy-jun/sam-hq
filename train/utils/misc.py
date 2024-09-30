@@ -493,7 +493,6 @@ def mask_iou(pred_label,label):
     return intersection / union
 
 
-
 # General util function to get the boundary of a binary mask.
 # https://gist.github.com/bowenc0221/71f7a02afee92646ca05efeeb14d687d
 def mask_to_boundary(mask, dilation_ratio=0.02):

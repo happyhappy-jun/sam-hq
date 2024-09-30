@@ -1,0 +1,546 @@
+args: Namespace(batch_size_train=4, batch_size_valid=1, checkpoint='./pretrained_checkpoint/sam_vit_h_4b8939.pth', device='cuda', dist_backend='nccl', dist_url='env://', distributed=True, eval=False, find_unused_params=False, gpu=0, input_size=[1024, 1024], learning_rate=0.001, local_rank=0, lr_drop_epoch=10, max_epoch_num=12, model_save_fre=1, model_type='vit_h', output='work_dirs/hq_sam_h_paste', rank=0, restore_model=None, seed=42, start_epoch=0, visualize=False, world_size=4)
+
+End torch.distributed.barrier()
+--- create training dataloader ---
+------------------------------ train --------------------------------
+--->>> train  dataset  0 / 7   DIS5K-TR <<<---
+-im- DIS5K-TR /home/junyoon/sam-aug/outputs/trans_x4/paste/DIS5K/DIS5K/DIS-TR/im :  14998
+-gt- DIS5K-TR /home/junyoon/sam-aug/outputs/trans_x4/paste/DIS5K/DIS5K/DIS-TR/gt :  14998
+--->>> train  dataset  1 / 7   ThinObject5k-TR <<<---
+-im- ThinObject5k-TR /home/junyoon/sam-aug/outputs/trans_x4/paste/thin_object_detection/ThinObject5K/images_train :  23759
+-gt- ThinObject5k-TR /home/junyoon/sam-aug/outputs/trans_x4/paste/thin_object_detection/ThinObject5K/masks_train :  23759
+--->>> train  dataset  2 / 7   FSS <<<---
+-im- FSS ./data/cascade_psp/fss_all :  10000
+-gt- FSS ./data/cascade_psp/fss_all :  10000
+--->>> train  dataset  3 / 7   DUTS-TR <<<---
+-im- DUTS-TR ./data/cascade_psp/DUTS-TR :  10553
+-gt- DUTS-TR ./data/cascade_psp/DUTS-TR :  10553
+--->>> train  dataset  4 / 7   DUTS-TE <<<---
+-im- DUTS-TE ./data/cascade_psp/DUTS-TE :  5019
+-gt- DUTS-TE ./data/cascade_psp/DUTS-TE :  5019
+--->>> train  dataset  5 / 7   ECSSD <<<---
+-im- ECSSD ./data/cascade_psp/ecssd :  1000
+-gt- ECSSD ./data/cascade_psp/ecssd :  1000
+--->>> train  dataset  6 / 7   MSRA10K <<<---
+-im- MSRA10K ./data/cascade_psp/MSRA_10K :  10000
+-gt- MSRA10K ./data/cascade_psp/MSRA_10K :  10000
+4708  train dataloaders created
+--- create valid dataloader ---
+------------------------------ valid --------------------------------
+--->>> valid  dataset  0 / 4   DIS5K-VD <<<---
+-im- DIS5K-VD /home/junyoon/sam-aug/data/DIS5K/DIS5K/DIS-VD/im :  470
+-gt- DIS5K-VD /home/junyoon/sam-aug/data/DIS5K/DIS5K/DIS-VD/gt :  470
+--->>> valid  dataset  1 / 4   COIFT <<<---
+-im- COIFT /home/junyoon/sam-aug/data/thin_object_detection/COIFT/images :  280
+-gt- COIFT /home/junyoon/sam-aug/data/thin_object_detection/COIFT/masks :  280
+--->>> valid  dataset  2 / 4   HRSOD <<<---
+-im- HRSOD /home/junyoon/sam-aug/data/thin_object_detection/HRSOD/images :  287
+-gt- HRSOD /home/junyoon/sam-aug/data/thin_object_detection/HRSOD/masks_max255 :  287
+--->>> valid  dataset  3 / 4   ThinObject5k-TE <<<---
+-im- ThinObject5k-TE /home/junyoon/sam-aug/data/thin_object_detection/ThinObject5K/images_test :  500
+-gt- ThinObject5k-TE /home/junyoon/sam-aug/data/thin_object_detection/ThinObject5K/masks_test :  500
+4  valid dataloaders created
+--- define optimizer ---
+/home/junyoon/sam-aug/sam-hq/train/segment_anything_training/build_sam.py:105: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/home/junyoon/sam-aug/sam-hq/train/segment_anything_training/build_sam.py:105: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/home/junyoon/sam-aug/sam-hq/train/segment_anything_training/build_sam.py:105: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+/home/junyoon/sam-aug/sam-hq/train/segment_anything_training/build_sam.py:105: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+epoch:    0   learning rate:   0.001
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/torch/functional.py:513: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3609.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/torch/functional.py:513: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3609.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/torch/functional.py:513: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3609.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/torch/functional.py:513: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3609.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+  [   0/4708]  eta: 3:49:36  training_loss: 1.4734 (1.4734)  loss_dice: 0.8120 (0.8120)  loss_mask: 0.6614 (0.6614)  time: 2.9263  data: 0.7359  max mem: 18417
+  [1000/4708]  eta: 1:08:59  training_loss: 0.2412 (0.3064)  loss_dice: 0.1192 (0.1522)  loss_mask: 0.1207 (0.1542)  time: 1.1099  data: 0.0028  max mem: 18842
+  [2000/4708]  eta: 0:50:03  training_loss: 0.2329 (0.2777)  loss_dice: 0.1082 (0.1371)  loss_mask: 0.1199 (0.1406)  time: 1.1111  data: 0.0023  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [3000/4708]  eta: 0:31:31  training_loss: 0.2509 (0.2642)  loss_dice: 0.1121 (0.1298)  loss_mask: 0.1303 (0.1343)  time: 1.1056  data: 0.0028  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [4000/4708]  eta: 0:13:03  training_loss: 0.2165 (0.2556)  loss_dice: 0.1083 (0.1251)  loss_mask: 0.1041 (0.1305)  time: 1.1176  data: 0.0023  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.2093 (0.2502)  loss_dice: 0.0889 (0.1220)  loss_mask: 0.1229 (0.1282)  time: 1.0987  data: 0.0025  max mem: 18845
+ Total time: 1:27:02 (1.1093 s / it)
+Finished epoch:       0
+Averaged stats: training_loss: 0.2093 (0.2502)  loss_dice: 0.0889 (0.1220)  loss_mask: 0.1229 (0.1282)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:01:39  val_boundary_iou_0: 0.7582 (0.7582)  val_iou_0: 0.7680 (0.7680)  time: 0.8447  data: 0.4363  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.6718 (0.6778)  val_iou_0: 0.7628 (0.7609)  time: 0.4971  data: 0.0036  max mem: 18845
+ Total time: 0:01:01 (0.5238 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.6718 (0.6778)  val_iou_0: 0.7628 (0.7609)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:41  val_boundary_iou_1: 0.9463 (0.9463)  val_iou_1: 0.9755 (0.9755)  time: 0.5906  data: 0.2440  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.8984 (0.8833)  val_iou_1: 0.9547 (0.9368)  time: 0.2657  data: 0.0027  max mem: 18845
+ Total time: 0:00:18 (0.2705 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.8984 (0.8833)  val_iou_1: 0.9547 (0.9368)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:25  val_boundary_iou_2: 0.9063 (0.9063)  val_iou_2: 0.9413 (0.9413)  time: 1.1822  data: 0.4750  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8422 (0.8374)  val_iou_2: 0.9180 (0.9103)  time: 0.5731  data: 0.0024  max mem: 18845
+ Total time: 0:00:45 (0.6376 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8422 (0.8374)  val_iou_2: 0.9180 (0.9103)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:05  val_boundary_iou_3: 0.8372 (0.8372)  val_iou_3: 0.8842 (0.8842)  time: 0.5215  data: 0.2567  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.7581 (0.7449)  val_iou_3: 0.9046 (0.8527)  time: 0.3084  data: 0.0019  max mem: 18845
+ Total time: 0:00:40 (0.3234 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.7581 (0.7449)  val_iou_3: 0.9046 (0.8527)
+come here save at work_dirs/hq_sam_h_paste/epoch_0.pth
+epoch:    1   learning rate:   0.001
+  [   0/4708]  eta: 2:23:29  training_loss: 0.2102 (0.2102)  loss_dice: 0.1036 (0.1036)  loss_mask: 0.1066 (0.1066)  time: 1.8288  data: 0.5964  max mem: 18845
+  [1000/4708]  eta: 1:09:01  training_loss: 0.2075 (0.2235)  loss_dice: 0.0991 (0.1065)  loss_mask: 0.1292 (0.1169)  time: 1.0936  data: 0.0023  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [2000/4708]  eta: 0:50:39  training_loss: 0.1852 (0.2220)  loss_dice: 0.0851 (0.1056)  loss_mask: 0.0892 (0.1164)  time: 1.1442  data: 0.0025  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [3000/4708]  eta: 0:31:56  training_loss: 0.2156 (0.2184)  loss_dice: 0.1090 (0.1035)  loss_mask: 0.1102 (0.1148)  time: 1.1434  data: 0.0028  max mem: 18845
+  [4000/4708]  eta: 0:13:15  training_loss: 0.1708 (0.2157)  loss_dice: 0.0884 (0.1024)  loss_mask: 0.0876 (0.1133)  time: 1.1113  data: 0.0026  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1707 (0.2142)  loss_dice: 0.0763 (0.1017)  loss_mask: 0.0952 (0.1126)  time: 1.0942  data: 0.0023  max mem: 18845
+ Total time: 1:27:59 (1.1213 s / it)
+Finished epoch:       1
+Averaged stats: training_loss: 0.1707 (0.2142)  loss_dice: 0.0763 (0.1017)  loss_mask: 0.0952 (0.1126)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:02:05  val_boundary_iou_0: 0.7490 (0.7490)  val_iou_0: 0.7603 (0.7603)  time: 1.0641  data: 0.5546  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.6678 (0.6832)  val_iou_0: 0.7503 (0.7584)  time: 0.5166  data: 0.0023  max mem: 18845
+ Total time: 0:01:02 (0.5281 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.6678 (0.6832)  val_iou_0: 0.7503 (0.7584)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:31  val_boundary_iou_1: 0.9375 (0.9375)  val_iou_1: 0.9710 (0.9710)  time: 0.4454  data: 0.1830  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.8891 (0.8776)  val_iou_1: 0.9525 (0.9350)  time: 0.2664  data: 0.0024  max mem: 18845
+ Total time: 0:00:18 (0.2691 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.8891 (0.8776)  val_iou_1: 0.9525 (0.9350)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:23  val_boundary_iou_2: 0.9059 (0.9059)  val_iou_2: 0.9464 (0.9464)  time: 1.1592  data: 0.4259  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8411 (0.8343)  val_iou_2: 0.9107 (0.9054)  time: 0.6099  data: 0.0026  max mem: 18845
+ Total time: 0:00:45 (0.6353 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8411 (0.8343)  val_iou_2: 0.9107 (0.9054)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:20  val_boundary_iou_3: 0.8058 (0.8058)  val_iou_3: 0.8381 (0.8381)  time: 0.6400  data: 0.2991  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.7962 (0.7525)  val_iou_3: 0.9056 (0.8542)  time: 0.3175  data: 0.0018  max mem: 18845
+ Total time: 0:00:40 (0.3251 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.7962 (0.7525)  val_iou_3: 0.9056 (0.8542)
+come here save at work_dirs/hq_sam_h_paste/epoch_1.pth
+epoch:    2   learning rate:   0.001
+  [   0/4708]  eta: 2:15:46  training_loss: 0.1482 (0.1482)  loss_dice: 0.0849 (0.0849)  loss_mask: 0.0633 (0.0633)  time: 1.7304  data: 0.4423  max mem: 18845
+  [1000/4708]  eta: 1:09:47  training_loss: 0.1717 (0.2056)  loss_dice: 0.0846 (0.0981)  loss_mask: 0.0850 (0.1075)  time: 1.1185  data: 0.0026  max mem: 18845
+  [2000/4708]  eta: 0:50:38  training_loss: 0.2006 (0.2063)  loss_dice: 0.1002 (0.0979)  loss_mask: 0.1129 (0.1084)  time: 1.1241  data: 0.0027  max mem: 18845
+  [3000/4708]  eta: 0:32:01  training_loss: 0.1656 (0.2039)  loss_dice: 0.0801 (0.0967)  loss_mask: 0.0847 (0.1072)  time: 1.1328  data: 0.0023  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [4000/4708]  eta: 0:13:16  training_loss: 0.1705 (0.2024)  loss_dice: 0.0727 (0.0959)  loss_mask: 0.0917 (0.1065)  time: 1.1079  data: 0.0024  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1963 (0.2026)  loss_dice: 0.0926 (0.0960)  loss_mask: 0.0985 (0.1066)  time: 1.1017  data: 0.0024  max mem: 18845
+ Total time: 1:28:12 (1.1242 s / it)
+Finished epoch:       2
+Averaged stats: training_loss: 0.1963 (0.2026)  loss_dice: 0.0926 (0.0960)  loss_mask: 0.0985 (0.1066)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:01:47  val_boundary_iou_0: 0.7756 (0.7756)  val_iou_0: 0.7861 (0.7861)  time: 0.9096  data: 0.3831  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.7030 (0.6950)  val_iou_0: 0.7832 (0.7750)  time: 0.4647  data: 0.0023  max mem: 18845
+ Total time: 0:01:00 (0.5123 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.7030 (0.6950)  val_iou_0: 0.7832 (0.7750)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:43  val_boundary_iou_1: 0.9474 (0.9474)  val_iou_1: 0.9756 (0.9756)  time: 0.6265  data: 0.2264  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9165 (0.9057)  val_iou_1: 0.9635 (0.9518)  time: 0.2592  data: 0.0022  max mem: 18845
+ Total time: 0:00:18 (0.2675 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9165 (0.9057)  val_iou_1: 0.9635 (0.9518)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:39  val_boundary_iou_2: 0.9129 (0.9129)  val_iou_2: 0.9557 (0.9557)  time: 1.3803  data: 0.3795  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8323 (0.8474)  val_iou_2: 0.9329 (0.9196)  time: 0.5951  data: 0.0020  max mem: 18845
+ Total time: 0:00:45 (0.6296 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8323 (0.8474)  val_iou_2: 0.9329 (0.9196)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:20  val_boundary_iou_3: 0.8768 (0.8768)  val_iou_3: 0.9062 (0.9062)  time: 0.6446  data: 0.2840  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.7829 (0.7792)  val_iou_3: 0.9114 (0.8817)  time: 0.3197  data: 0.0022  max mem: 18845
+ Total time: 0:00:40 (0.3254 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.7829 (0.7792)  val_iou_3: 0.9114 (0.8817)
+come here save at work_dirs/hq_sam_h_paste/epoch_2.pth
+epoch:    3   learning rate:   0.001
+  [   0/4708]  eta: 2:33:11  training_loss: 0.2568 (0.2568)  loss_dice: 0.1167 (0.1167)  loss_mask: 0.1401 (0.1401)  time: 1.9524  data: 0.6555  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [1000/4708]  eta: 1:10:37  training_loss: 0.1769 (0.1979)  loss_dice: 0.0823 (0.0942)  loss_mask: 0.0902 (0.1036)  time: 1.1249  data: 0.0025  max mem: 18845
+  [2000/4708]  eta: 0:51:09  training_loss: 0.1680 (0.1991)  loss_dice: 0.0772 (0.0945)  loss_mask: 0.0904 (0.1045)  time: 1.1156  data: 0.0026  max mem: 18845
+  [3000/4708]  eta: 0:32:05  training_loss: 0.1795 (0.1985)  loss_dice: 0.0846 (0.0942)  loss_mask: 0.0969 (0.1043)  time: 1.1085  data: 0.0029  max mem: 18845
+  [4000/4708]  eta: 0:13:18  training_loss: 0.1964 (0.1977)  loss_dice: 0.0991 (0.0939)  loss_mask: 0.0945 (0.1038)  time: 1.1357  data: 0.0029  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [4707/4708]  eta: 0:00:01  training_loss: 0.2125 (0.1973)  loss_dice: 0.0928 (0.0936)  loss_mask: 0.1038 (0.1037)  time: 1.1323  data: 0.0028  max mem: 18845
+ Total time: 1:28:42 (1.1305 s / it)
+Finished epoch:       3
+Averaged stats: training_loss: 0.2125 (0.1973)  loss_dice: 0.0928 (0.0936)  loss_mask: 0.1038 (0.1037)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:02:20  val_boundary_iou_0: 0.7972 (0.7972)  val_iou_0: 0.8052 (0.8052)  time: 1.1870  data: 0.6765  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.6975 (0.6884)  val_iou_0: 0.7563 (0.7742)  time: 0.5118  data: 0.0022  max mem: 18845
+ Total time: 0:01:05 (0.5523 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.6975 (0.6884)  val_iou_0: 0.7563 (0.7742)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:35  val_boundary_iou_1: 0.9535 (0.9535)  val_iou_1: 0.9782 (0.9782)  time: 0.5127  data: 0.2333  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9222 (0.8972)  val_iou_1: 0.9658 (0.9523)  time: 0.2630  data: 0.0028  max mem: 18845
+ Total time: 0:00:19 (0.2747 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9222 (0.8972)  val_iou_1: 0.9658 (0.9523)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:35  val_boundary_iou_2: 0.9118 (0.9118)  val_iou_2: 0.9620 (0.9620)  time: 1.3256  data: 0.4527  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8383 (0.8359)  val_iou_2: 0.9267 (0.9232)  time: 0.5690  data: 0.0023  max mem: 18845
+ Total time: 0:00:43 (0.6081 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8383 (0.8359)  val_iou_2: 0.9267 (0.9232)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:04  val_boundary_iou_3: 0.8810 (0.8810)  val_iou_3: 0.9134 (0.9134)  time: 0.5160  data: 0.2424  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.7752 (0.7863)  val_iou_3: 0.9192 (0.8970)  time: 0.3076  data: 0.0020  max mem: 18845
+ Total time: 0:00:40 (0.3205 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.7752 (0.7863)  val_iou_3: 0.9192 (0.8970)
+come here save at work_dirs/hq_sam_h_paste/epoch_3.pth
+epoch:    4   learning rate:   0.001
+  [   0/4708]  eta: 2:40:00  training_loss: 0.2569 (0.2569)  loss_dice: 0.1181 (0.1181)  loss_mask: 0.1388 (0.1388)  time: 2.0392  data: 0.5858  max mem: 18845
+  [1000/4708]  eta: 1:10:22  training_loss: 0.1711 (0.1947)  loss_dice: 0.0852 (0.0932)  loss_mask: 0.0902 (0.1015)  time: 1.1514  data: 0.0029  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [2000/4708]  eta: 0:51:15  training_loss: 0.1601 (0.1932)  loss_dice: 0.0749 (0.0920)  loss_mask: 0.0863 (0.1011)  time: 1.1079  data: 0.0024  max mem: 18845
+  [3000/4708]  eta: 0:32:13  training_loss: 0.1716 (0.1927)  loss_dice: 0.0815 (0.0915)  loss_mask: 0.0996 (0.1012)  time: 1.1246  data: 0.0024  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [4000/4708]  eta: 0:13:20  training_loss: 0.1659 (0.1927)  loss_dice: 0.0794 (0.0914)  loss_mask: 0.0793 (0.1012)  time: 1.1139  data: 0.0027  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1801 (0.1932)  loss_dice: 0.0826 (0.0916)  loss_mask: 0.0997 (0.1016)  time: 1.0991  data: 0.0025  max mem: 18845
+ Total time: 1:28:30 (1.1280 s / it)
+Finished epoch:       4
+Averaged stats: training_loss: 0.1801 (0.1932)  loss_dice: 0.0826 (0.0916)  loss_mask: 0.0997 (0.1016)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:02:04  val_boundary_iou_0: 0.7799 (0.7799)  val_iou_0: 0.7960 (0.7960)  time: 1.0511  data: 0.3921  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.7129 (0.7023)  val_iou_0: 0.7771 (0.7808)  time: 0.4979  data: 0.0023  max mem: 18845
+ Total time: 0:01:01 (0.5203 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.7129 (0.7023)  val_iou_0: 0.7771 (0.7808)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:35  val_boundary_iou_1: 0.9486 (0.9486)  val_iou_1: 0.9757 (0.9757)  time: 0.5060  data: 0.2026  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9052 (0.8872)  val_iou_1: 0.9601 (0.9415)  time: 0.2574  data: 0.0021  max mem: 18845
+ Total time: 0:00:18 (0.2606 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9052 (0.8872)  val_iou_1: 0.9601 (0.9415)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:28  val_boundary_iou_2: 0.9067 (0.9067)  val_iou_2: 0.9553 (0.9553)  time: 1.2279  data: 0.5120  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8284 (0.8406)  val_iou_2: 0.9214 (0.9141)  time: 0.5769  data: 0.0023  max mem: 18845
+ Total time: 0:00:44 (0.6175 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8284 (0.8406)  val_iou_2: 0.9214 (0.9141)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:14  val_boundary_iou_3: 0.8717 (0.8717)  val_iou_3: 0.9041 (0.9041)  time: 0.5961  data: 0.3198  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.7909 (0.7804)  val_iou_3: 0.9092 (0.8889)  time: 0.3196  data: 0.0020  max mem: 18845
+ Total time: 0:00:41 (0.3282 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.7909 (0.7804)  val_iou_3: 0.9092 (0.8889)
+come here save at work_dirs/hq_sam_h_paste/epoch_4.pth
+epoch:    5   learning rate:   0.001
+  [   0/4708]  eta: 2:04:21  training_loss: 0.2492 (0.2492)  loss_dice: 0.1101 (0.1101)  loss_mask: 0.1392 (0.1392)  time: 1.5848  data: 0.5263  max mem: 18845
+  [1000/4708]  eta: 1:08:22  training_loss: 0.1812 (0.1888)  loss_dice: 0.0865 (0.0895)  loss_mask: 0.0991 (0.0993)  time: 1.0853  data: 0.0025  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [2000/4708]  eta: 0:49:27  training_loss: 0.1905 (0.1900)  loss_dice: 0.0905 (0.0899)  loss_mask: 0.0930 (0.1001)  time: 1.0799  data: 0.0025  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [3000/4708]  eta: 0:31:09  training_loss: 0.1390 (0.1902)  loss_dice: 0.0721 (0.0903)  loss_mask: 0.0699 (0.0998)  time: 1.1059  data: 0.0027  max mem: 18845
+  [4000/4708]  eta: 0:12:55  training_loss: 0.1816 (0.1899)  loss_dice: 0.0837 (0.0902)  loss_mask: 0.1034 (0.0997)  time: 1.0966  data: 0.0024  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1706 (0.1897)  loss_dice: 0.0860 (0.0900)  loss_mask: 0.0852 (0.0997)  time: 1.0988  data: 0.0023  max mem: 18845
+ Total time: 1:26:00 (1.0961 s / it)
+Finished epoch:       5
+Averaged stats: training_loss: 0.1706 (0.1897)  loss_dice: 0.0860 (0.0900)  loss_mask: 0.0852 (0.0997)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:01:43  val_boundary_iou_0: 0.7944 (0.7944)  val_iou_0: 0.8063 (0.8063)  time: 0.8732  data: 0.4085  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.7034 (0.7006)  val_iou_0: 0.7766 (0.7838)  time: 0.5046  data: 0.0022  max mem: 18845
+ Total time: 0:01:02 (0.5285 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.7034 (0.7006)  val_iou_0: 0.7766 (0.7838)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:29  val_boundary_iou_1: 0.9499 (0.9499)  val_iou_1: 0.9762 (0.9762)  time: 0.4187  data: 0.1514  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9224 (0.8991)  val_iou_1: 0.9649 (0.9523)  time: 0.2607  data: 0.0023  max mem: 18845
+ Total time: 0:00:18 (0.2641 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9224 (0.8991)  val_iou_1: 0.9649 (0.9523)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:25  val_boundary_iou_2: 0.9129 (0.9129)  val_iou_2: 0.9603 (0.9603)  time: 1.1893  data: 0.3715  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8328 (0.8437)  val_iou_2: 0.9271 (0.9222)  time: 0.5696  data: 0.0022  max mem: 18845
+ Total time: 0:00:44 (0.6127 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8328 (0.8437)  val_iou_2: 0.9271 (0.9222)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:05  val_boundary_iou_3: 0.8702 (0.8702)  val_iou_3: 0.9127 (0.9127)  time: 0.5276  data: 0.2506  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.7861 (0.7827)  val_iou_3: 0.9189 (0.8950)  time: 0.3145  data: 0.0018  max mem: 18845
+ Total time: 0:00:40 (0.3207 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.7861 (0.7827)  val_iou_3: 0.9189 (0.8950)
+come here save at work_dirs/hq_sam_h_paste/epoch_5.pth
+epoch:    6   learning rate:   0.001
+  [   0/4708]  eta: 2:22:36  training_loss: 0.1633 (0.1633)  loss_dice: 0.0902 (0.0902)  loss_mask: 0.0731 (0.0731)  time: 1.8175  data: 0.4787  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [1000/4708]  eta: 1:09:06  training_loss: 0.1891 (0.1888)  loss_dice: 0.0935 (0.0892)  loss_mask: 0.1004 (0.0996)  time: 1.1186  data: 0.0025  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [2000/4708]  eta: 0:50:13  training_loss: 0.1798 (0.1884)  loss_dice: 0.0796 (0.0893)  loss_mask: 0.0972 (0.0991)  time: 1.0936  data: 0.0023  max mem: 18845
+  [3000/4708]  eta: 0:31:35  training_loss: 0.1757 (0.1886)  loss_dice: 0.0859 (0.0895)  loss_mask: 0.0865 (0.0992)  time: 1.1095  data: 0.0023  max mem: 18845
+  [4000/4708]  eta: 0:13:06  training_loss: 0.2108 (0.1886)  loss_dice: 0.0951 (0.0893)  loss_mask: 0.1136 (0.0993)  time: 1.1201  data: 0.0025  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1790 (0.1888)  loss_dice: 0.0876 (0.0893)  loss_mask: 0.0947 (0.0995)  time: 1.0190  data: 0.0020  max mem: 18845
+ Total time: 1:26:20 (1.1003 s / it)
+Finished epoch:       6
+Averaged stats: training_loss: 0.1790 (0.1888)  loss_dice: 0.0876 (0.0893)  loss_mask: 0.0947 (0.0995)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:01:39  val_boundary_iou_0: 0.7711 (0.7711)  val_iou_0: 0.7859 (0.7859)  time: 0.8430  data: 0.3492  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.7100 (0.7035)  val_iou_0: 0.7752 (0.7828)  time: 0.4298  data: 0.0018  max mem: 18845
+ Total time: 0:00:53 (0.4533 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.7100 (0.7035)  val_iou_0: 0.7752 (0.7828)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:29  val_boundary_iou_1: 0.9554 (0.9554)  val_iou_1: 0.9791 (0.9791)  time: 0.4190  data: 0.1703  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9250 (0.9009)  val_iou_1: 0.9660 (0.9531)  time: 0.2421  data: 0.0020  max mem: 18845
+ Total time: 0:00:17 (0.2469 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9250 (0.9009)  val_iou_1: 0.9660 (0.9531)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:15  val_boundary_iou_2: 0.9112 (0.9112)  val_iou_2: 0.9589 (0.9589)  time: 1.0441  data: 0.4248  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8458 (0.8430)  val_iou_2: 0.9230 (0.9174)  time: 0.4786  data: 0.0024  max mem: 18845
+ Total time: 0:00:37 (0.5269 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8458 (0.8430)  val_iou_2: 0.9230 (0.9174)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:05  val_boundary_iou_3: 0.8593 (0.8593)  val_iou_3: 0.9063 (0.9063)  time: 0.5271  data: 0.2491  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.8001 (0.7867)  val_iou_3: 0.9087 (0.8921)  time: 0.2828  data: 0.0024  max mem: 18845
+ Total time: 0:00:36 (0.2931 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.8001 (0.7867)  val_iou_3: 0.9087 (0.8921)
+come here save at work_dirs/hq_sam_h_paste/epoch_6.pth
+epoch:    7   learning rate:   0.001
+  [   0/4708]  eta: 1:53:33  training_loss: 0.1702 (0.1702)  loss_dice: 0.1070 (0.1070)  loss_mask: 0.0632 (0.0632)  time: 1.4472  data: 0.4442  max mem: 18845
+  [1000/4708]  eta: 1:02:59  training_loss: 0.1840 (0.1861)  loss_dice: 0.0883 (0.0879)  loss_mask: 0.0958 (0.0982)  time: 1.0246  data: 0.0021  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [2000/4708]  eta: 0:46:00  training_loss: 0.1937 (0.1871)  loss_dice: 0.0996 (0.0879)  loss_mask: 0.1053 (0.0993)  time: 1.0149  data: 0.0020  max mem: 18845
+  [3000/4708]  eta: 0:29:00  training_loss: 0.1667 (0.1866)  loss_dice: 0.0869 (0.0878)  loss_mask: 0.0884 (0.0988)  time: 1.0152  data: 0.0021  max mem: 18845
+  [4000/4708]  eta: 0:12:01  training_loss: 0.1767 (0.1865)  loss_dice: 0.0860 (0.0878)  loss_mask: 0.0956 (0.0987)  time: 1.0164  data: 0.0021  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1654 (0.1869)  loss_dice: 0.0827 (0.0881)  loss_mask: 0.0837 (0.0988)  time: 1.0185  data: 0.0021  max mem: 18845
+ Total time: 1:19:54 (1.0184 s / it)
+Finished epoch:       7
+Averaged stats: training_loss: 0.1654 (0.1869)  loss_dice: 0.0827 (0.0881)  loss_mask: 0.0837 (0.0988)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:01:41  val_boundary_iou_0: 0.7807 (0.7807)  val_iou_0: 0.7862 (0.7862)  time: 0.8572  data: 0.4010  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.6800 (0.6977)  val_iou_0: 0.7809 (0.7801)  time: 0.4337  data: 0.0018  max mem: 18845
+ Total time: 0:00:55 (0.4680 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.6800 (0.6977)  val_iou_0: 0.7809 (0.7801)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:28  val_boundary_iou_1: 0.9542 (0.9542)  val_iou_1: 0.9790 (0.9790)  time: 0.4049  data: 0.1583  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9292 (0.9021)  val_iou_1: 0.9657 (0.9549)  time: 0.2426  data: 0.0020  max mem: 18845
+ Total time: 0:00:17 (0.2451 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9292 (0.9021)  val_iou_1: 0.9657 (0.9549)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:12  val_boundary_iou_2: 0.9197 (0.9197)  val_iou_2: 0.9546 (0.9546)  time: 1.0055  data: 0.3677  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8270 (0.8432)  val_iou_2: 0.9363 (0.9236)  time: 0.5109  data: 0.0022  max mem: 18845
+ Total time: 0:00:39 (0.5429 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8270 (0.8432)  val_iou_2: 0.9363 (0.9236)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:01  val_boundary_iou_3: 0.8428 (0.8428)  val_iou_3: 0.9075 (0.9075)  time: 0.4945  data: 0.2186  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.7967 (0.7874)  val_iou_3: 0.9215 (0.9011)  time: 0.2883  data: 0.0021  max mem: 18845
+ Total time: 0:00:36 (0.2930 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.7967 (0.7874)  val_iou_3: 0.9215 (0.9011)
+come here save at work_dirs/hq_sam_h_paste/epoch_7.pth
+epoch:    8   learning rate:   0.001
+  [   0/4708]  eta: 1:58:21  training_loss: 0.1611 (0.1611)  loss_dice: 0.0635 (0.0635)  loss_mask: 0.0977 (0.0977)  time: 1.5084  data: 0.3041  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [1000/4708]  eta: 1:03:02  training_loss: 0.1537 (0.1872)  loss_dice: 0.0765 (0.0886)  loss_mask: 0.0826 (0.0985)  time: 1.0214  data: 0.0018  max mem: 18845
+  [2000/4708]  eta: 0:47:35  training_loss: 0.1850 (0.1858)  loss_dice: 0.0833 (0.0880)  loss_mask: 0.0928 (0.0978)  time: 1.0957  data: 0.0024  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [3000/4708]  eta: 0:30:24  training_loss: 0.2030 (0.1857)  loss_dice: 0.0884 (0.0879)  loss_mask: 0.0984 (0.0978)  time: 1.0929  data: 0.0024  max mem: 18845
+  [4000/4708]  eta: 0:12:42  training_loss: 0.1848 (0.1858)  loss_dice: 0.0844 (0.0880)  loss_mask: 0.1006 (0.0978)  time: 1.0783  data: 0.0022  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1550 (0.1852)  loss_dice: 0.0735 (0.0877)  loss_mask: 0.0831 (0.0975)  time: 1.0912  data: 0.0025  max mem: 18845
+ Total time: 1:24:41 (1.0794 s / it)
+Finished epoch:       8
+Averaged stats: training_loss: 0.1550 (0.1852)  loss_dice: 0.0735 (0.0877)  loss_mask: 0.0831 (0.0975)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:01:48  val_boundary_iou_0: 0.8078 (0.8078)  val_iou_0: 0.8147 (0.8147)  time: 0.9218  data: 0.4096  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.7278 (0.7074)  val_iou_0: 0.7793 (0.7890)  time: 0.4709  data: 0.0023  max mem: 18845
+ Total time: 0:01:00 (0.5165 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.7278 (0.7074)  val_iou_0: 0.7793 (0.7890)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:29  val_boundary_iou_1: 0.9500 (0.9500)  val_iou_1: 0.9767 (0.9767)  time: 0.4168  data: 0.1664  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9241 (0.9053)  val_iou_1: 0.9646 (0.9552)  time: 0.2620  data: 0.0022  max mem: 18845
+ Total time: 0:00:18 (0.2643 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9241 (0.9053)  val_iou_1: 0.9646 (0.9552)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:21  val_boundary_iou_2: 0.9140 (0.9140)  val_iou_2: 0.9472 (0.9472)  time: 1.1252  data: 0.4042  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8413 (0.8487)  val_iou_2: 0.9352 (0.9240)  time: 0.5231  data: 0.0033  max mem: 18845
+ Total time: 0:00:42 (0.5858 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8413 (0.8487)  val_iou_2: 0.9352 (0.9240)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:03  val_boundary_iou_3: 0.8884 (0.8884)  val_iou_3: 0.9156 (0.9156)  time: 0.5045  data: 0.2097  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.7976 (0.8046)  val_iou_3: 0.9426 (0.9071)  time: 0.2975  data: 0.0022  max mem: 18845
+ Total time: 0:00:38 (0.3098 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.7976 (0.8046)  val_iou_3: 0.9426 (0.9071)
+come here save at work_dirs/hq_sam_h_paste/epoch_8.pth
+epoch:    9   learning rate:   0.001
+  [   0/4708]  eta: 2:37:07  training_loss: 0.1968 (0.1968)  loss_dice: 0.1007 (0.1007)  loss_mask: 0.0961 (0.0961)  time: 2.0025  data: 0.9150  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [1000/4708]  eta: 1:05:47  training_loss: 0.1529 (0.1823)  loss_dice: 0.0680 (0.0865)  loss_mask: 0.0815 (0.0958)  time: 1.0722  data: 0.0025  max mem: 18845
+  [2000/4708]  eta: 0:47:56  training_loss: 0.1357 (0.1832)  loss_dice: 0.0684 (0.0871)  loss_mask: 0.0693 (0.0960)  time: 1.0641  data: 0.0022  max mem: 18845
+  [3000/4708]  eta: 0:30:12  training_loss: 0.1864 (0.1836)  loss_dice: 0.0864 (0.0873)  loss_mask: 0.1000 (0.0963)  time: 1.0543  data: 0.0023  max mem: 18845
+  [4000/4708]  eta: 0:12:36  training_loss: 0.1547 (0.1829)  loss_dice: 0.0713 (0.0870)  loss_mask: 0.0840 (0.0959)  time: 1.0978  data: 0.0030  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1789 (0.1833)  loss_dice: 0.0809 (0.0870)  loss_mask: 0.0937 (0.0963)  time: 1.1077  data: 0.0035  max mem: 18845
+ Total time: 1:24:16 (1.0740 s / it)
+Finished epoch:       9
+Averaged stats: training_loss: 0.1789 (0.1833)  loss_dice: 0.0809 (0.0870)  loss_mask: 0.0937 (0.0963)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:01:39  val_boundary_iou_0: 0.8090 (0.8090)  val_iou_0: 0.8142 (0.8142)  time: 0.8405  data: 0.3397  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.7311 (0.7096)  val_iou_0: 0.7873 (0.7899)  time: 0.4646  data: 0.0025  max mem: 18845
+ Total time: 0:00:59 (0.5020 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.7311 (0.7096)  val_iou_0: 0.7873 (0.7899)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:31  val_boundary_iou_1: 0.9449 (0.9449)  val_iou_1: 0.9726 (0.9726)  time: 0.4509  data: 0.1731  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9211 (0.9010)  val_iou_1: 0.9606 (0.9516)  time: 0.2533  data: 0.0022  max mem: 18845
+ Total time: 0:00:18 (0.2572 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9211 (0.9010)  val_iou_1: 0.9606 (0.9516)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:10  val_boundary_iou_2: 0.9145 (0.9145)  val_iou_2: 0.9466 (0.9466)  time: 0.9852  data: 0.3669  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8464 (0.8494)  val_iou_2: 0.9359 (0.9224)  time: 0.5848  data: 0.0021  max mem: 18845
+ Total time: 0:00:44 (0.6161 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8464 (0.8494)  val_iou_2: 0.9359 (0.9224)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:04  val_boundary_iou_3: 0.8716 (0.8716)  val_iou_3: 0.9127 (0.9127)  time: 0.5128  data: 0.2239  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.8072 (0.7957)  val_iou_3: 0.9363 (0.8991)  time: 0.2982  data: 0.0021  max mem: 18845
+ Total time: 0:00:38 (0.3059 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.8072 (0.7957)  val_iou_3: 0.9363 (0.8991)
+come here save at work_dirs/hq_sam_h_paste/epoch_9.pth
+epoch:    10   learning rate:   0.0001
+  [   0/4708]  eta: 2:10:27  training_loss: 0.1277 (0.1277)  loss_dice: 0.0500 (0.0500)  loss_mask: 0.0777 (0.0777)  time: 1.6625  data: 0.3597  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [1000/4708]  eta: 1:06:09  training_loss: 0.1843 (0.1774)  loss_dice: 0.0840 (0.0845)  loss_mask: 0.1039 (0.0929)  time: 1.0871  data: 0.0034  max mem: 18845
+  [2000/4708]  eta: 0:49:03  training_loss: 0.1977 (0.1787)  loss_dice: 0.0981 (0.0849)  loss_mask: 0.0800 (0.0938)  time: 1.1084  data: 0.0032  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [3000/4708]  eta: 0:31:01  training_loss: 0.1822 (0.1763)  loss_dice: 0.0809 (0.0839)  loss_mask: 0.0883 (0.0925)  time: 1.1078  data: 0.0032  max mem: 18845
+  [4000/4708]  eta: 0:12:54  training_loss: 0.1354 (0.1756)  loss_dice: 0.0724 (0.0835)  loss_mask: 0.0759 (0.0921)  time: 1.1197  data: 0.0042  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1997 (0.1756)  loss_dice: 0.0897 (0.0834)  loss_mask: 0.1001 (0.0922)  time: 1.1184  data: 0.0035  max mem: 18845
+ Total time: 1:26:09 (1.0981 s / it)
+Finished epoch:       10
+Averaged stats: training_loss: 0.1997 (0.1756)  loss_dice: 0.0897 (0.0834)  loss_mask: 0.1001 (0.0922)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:01:51  val_boundary_iou_0: 0.7679 (0.7679)  val_iou_0: 0.7813 (0.7813)  time: 0.9458  data: 0.3751  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.7336 (0.7159)  val_iou_0: 0.7906 (0.7951)  time: 0.4589  data: 0.0033  max mem: 18845
+ Total time: 0:01:00 (0.5153 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.7336 (0.7159)  val_iou_0: 0.7906 (0.7951)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:32  val_boundary_iou_1: 0.9509 (0.9509)  val_iou_1: 0.9758 (0.9758)  time: 0.4618  data: 0.2018  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9224 (0.9046)  val_iou_1: 0.9656 (0.9542)  time: 0.2566  data: 0.0029  max mem: 18845
+ Total time: 0:00:18 (0.2599 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9224 (0.9046)  val_iou_1: 0.9656 (0.9542)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:21  val_boundary_iou_2: 0.9112 (0.9112)  val_iou_2: 0.9578 (0.9578)  time: 1.1274  data: 0.4351  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8572 (0.8486)  val_iou_2: 0.9299 (0.9206)  time: 0.5362  data: 0.0028  max mem: 18845
+ Total time: 0:00:41 (0.5755 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8572 (0.8486)  val_iou_2: 0.9299 (0.9206)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:13  val_boundary_iou_3: 0.8747 (0.8747)  val_iou_3: 0.9103 (0.9103)  time: 0.5889  data: 0.3121  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.8082 (0.7951)  val_iou_3: 0.9325 (0.8971)  time: 0.2998  data: 0.0031  max mem: 18845
+ Total time: 0:00:38 (0.3120 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.8082 (0.7951)  val_iou_3: 0.9325 (0.8971)
+come here save at work_dirs/hq_sam_h_paste/epoch_10.pth
+epoch:    11   learning rate:   0.0001
+  [   0/4708]  eta: 2:04:35  training_loss: 0.1912 (0.1912)  loss_dice: 0.0916 (0.0916)  loss_mask: 0.0995 (0.0995)  time: 1.5877  data: 0.5439  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (102717153 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [1000/4708]  eta: 1:09:20  training_loss: 0.1637 (0.1740)  loss_dice: 0.0873 (0.0830)  loss_mask: 0.0813 (0.0910)  time: 1.1521  data: 0.0034  max mem: 18845
+/home/junyoon/miniconda3/envs/sam_hq/lib/python3.8/site-packages/PIL/Image.py:3368: DecompressionBombWarning: Image size (101824320 pixels) exceeds limit of 89478485 pixels, could be decompression bomb DOS attack.
+  warnings.warn(
+  [2000/4708]  eta: 0:51:22  training_loss: 0.1470 (0.1744)  loss_dice: 0.0789 (0.0831)  loss_mask: 0.0737 (0.0913)  time: 1.1394  data: 0.0041  max mem: 18845
+  [3000/4708]  eta: 0:32:33  training_loss: 0.1858 (0.1748)  loss_dice: 0.0912 (0.0832)  loss_mask: 0.0892 (0.0915)  time: 1.1640  data: 0.0045  max mem: 18845
+  [4000/4708]  eta: 0:13:30  training_loss: 0.1825 (0.1745)  loss_dice: 0.0696 (0.0828)  loss_mask: 0.0963 (0.0917)  time: 1.1491  data: 0.0039  max mem: 18845
+  [4707/4708]  eta: 0:00:01  training_loss: 0.1433 (0.1745)  loss_dice: 0.0660 (0.0827)  loss_mask: 0.0751 (0.0918)  time: 1.1334  data: 0.0038  max mem: 18845
+ Total time: 1:29:54 (1.1459 s / it)
+Finished epoch:       11
+Averaged stats: training_loss: 0.1433 (0.1745)  loss_dice: 0.0660 (0.0827)  loss_mask: 0.0751 (0.0918)
+Validating...
+valid_dataloader len: 118
+  [  0/118]  eta: 0:02:30  val_boundary_iou_0: 0.7738 (0.7738)  val_iou_0: 0.7808 (0.7808)  time: 1.2737  data: 0.4224  max mem: 18845
+  [117/118]  eta: 0:00:00  val_boundary_iou_0: 0.7430 (0.7170)  val_iou_0: 0.7829 (0.7959)  time: 0.4844  data: 0.0029  max mem: 18845
+ Total time: 0:01:02 (0.5291 s / it)
+============================
+Averaged stats: val_boundary_iou_0: 0.7430 (0.7170)  val_iou_0: 0.7829 (0.7959)
+valid_dataloader len: 70
+  [ 0/70]  eta: 0:00:44  val_boundary_iou_1: 0.9546 (0.9546)  val_iou_1: 0.9782 (0.9782)  time: 0.6320  data: 0.2309  max mem: 18845
+  [69/70]  eta: 0:00:00  val_boundary_iou_1: 0.9266 (0.9080)  val_iou_1: 0.9684 (0.9554)  time: 0.2597  data: 0.0026  max mem: 18845
+ Total time: 0:00:18 (0.2677 s / it)
+============================
+Averaged stats: val_boundary_iou_1: 0.9266 (0.9080)  val_iou_1: 0.9684 (0.9554)
+valid_dataloader len: 72
+  [ 0/72]  eta: 0:01:16  val_boundary_iou_2: 0.9121 (0.9121)  val_iou_2: 0.9591 (0.9591)  time: 1.0556  data: 0.4107  max mem: 18845
+  [71/72]  eta: 0:00:00  val_boundary_iou_2: 0.8575 (0.8518)  val_iou_2: 0.9343 (0.9229)  time: 0.5612  data: 0.0025  max mem: 18845
+ Total time: 0:00:44 (0.6186 s / it)
+============================
+Averaged stats: val_boundary_iou_2: 0.8575 (0.8518)  val_iou_2: 0.9343 (0.9229)
+valid_dataloader len: 125
+  [  0/125]  eta: 0:01:25  val_boundary_iou_3: 0.8816 (0.8816)  val_iou_3: 0.9114 (0.9114)  time: 0.6836  data: 0.3259  max mem: 18845
+  [124/125]  eta: 0:00:00  val_boundary_iou_3: 0.8166 (0.8041)  val_iou_3: 0.9334 (0.9044)  time: 0.3005  data: 0.0023  max mem: 18845
+ Total time: 0:00:39 (0.3160 s / it)
+============================
+Averaged stats: val_boundary_iou_3: 0.8166 (0.8041)  val_iou_3: 0.9334 (0.9044)
+come here save at work_dirs/hq_sam_h_paste/epoch_11.pth
+Training Reaches The Maximum Epoch Number
+train.py:499: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  sam_ckpt = torch.load(args.checkpoint)
+train.py:500: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  hq_decoder = torch.load(args.output + model_name)
+
+
